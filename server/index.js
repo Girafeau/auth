@@ -25,6 +25,7 @@ const port = process.env.PORT || 8000;
 
 server.use(parser.urlencoded({extended: false}));
 server.use(parser.json());
+server.use(express.static('dist'));
 server.use(cors());
 
 server.get('/authenticate', function (req, res) {
