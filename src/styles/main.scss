@@ -1,0 +1,62 @@
+@import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
+
+$family-sans-serif: 'Varela Round', sans-serif;
+$control-border-width: 0px;
+$input-focus-box-shadow-size: 0 0 0 0;
+$radius: 7px;
+$input-border-color: whitesmoke;
+$input-focus-border-color: whitesmoke;
+$label-weight: 500;
+$input-shadow: none;
+$title-weight: 500;
+$input-background-color: whitesmoke;
+$link: #5222D0;
+
+html, body {
+  height: 100%;
+  width: 100%;
+  padding: 0;
+  margin: 0;
+}
+
+body {
+  margin: 0 auto;
+}
+
+.hero-body .container {
+
+}
+
+.pop {
+  border: whitesmoke 1px solid;
+  padding: 3em;
+ padding-top: 8em;
+  padding-bottom: 8em;
+  -webkit-box-shadow: 5px 5px 20px 0px whitesmoke;
+  -moz-box-shadow: 5px 5px 20px 0px whitesmoke;
+  box-shadow: 5px 5px 20px 0px whitesmoke;
+}
+
+.control .icon {
+  pointer-events: initial !important;
+}
+
+.pointer:hover {
+  cursor: pointer;
+}
+
+.has-margin-top {
+  margin-top: 2em;
+}
+
+.underline {
+  border-bottom: 1px solid;
+}
+
+.form {
+  margin-top: 4em;
+}
+
+@import '../../node_modules/bulma/bulma';
+@import "../../node_modules/@fortawesome/fontawesome-free/css/fontawesome.css";
+@import "../../node_modules/@fortawesome/fontawesome-free/css/all.css";
