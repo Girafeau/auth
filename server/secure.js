@@ -9,7 +9,7 @@ module.exports = function(server) {
             return next();
         } else {
             res.status(401).send({
-                succes: false,
+                success: false,
                 message: 'missing token'
             });
         }
@@ -17,13 +17,13 @@ module.exports = function(server) {
       const object = await tokens.getAccessToken(res.locals.token);
       if(object) {
         res.status(200).send({
-            succes: true,
+            success: true,
             client_id: object.client_id,
             user_id: object.user_id
         });
       } else {
         res.status(401).send({
-            succes: false,
+            success: false,
             message: 'invalid token'
         });
       }

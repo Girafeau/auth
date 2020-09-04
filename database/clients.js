@@ -10,7 +10,7 @@ mongoose.model('clients', new Schema({
 const clients = mongoose.model('clients');
 
 module.exports.get = function(id, secret) {
-    return clients.findOne({ client_id: id, client_secret: secret });
+    return clients.find({ client_id: id, client_secret: secret });
 };
 
 module.exports.get = function(id) {
