@@ -1,24 +1,10 @@
-# src
+# Service d'authentification OAuth2 ☂️
 
-## Project setup
+### URL
 ```
-npm install
-```
-
-### Compiles and hot-reloads for development
-```
-npm run serve
+/authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code
 ```
 
-### Compiles and minifies for production
-```
-npm run build
-```
 
-### Lints and fixes files
-```
-npm run lint
-```
 
-### Customize configuration
-See [Configuration Reference](https://cli.vuejs.org/config/).
+A faire...
