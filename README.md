@@ -1,10 +1,20 @@
 # Service d'authentification OAuth2 ☂️
 
-### URL
 ```
-/authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code
+GET /authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code
 ```
 
+```
+POST /request/authorize
 
+{
+    "client_id": <ID>,
+    "client_secret": <SECRET>,
+    "grant_type": "authorization_code",
+    "authorization_code": <CODE>
+}
+```
 
-A faire...
+```
+GET /request/secure
+```
