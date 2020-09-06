@@ -29,10 +29,7 @@ server.use(parser.urlencoded({
 server.use(parser.json());
 server.use(express.static('dist'));
 const options = {
-  origin: function(origin, callback) {
-    // Appel à la base de données
-    callback(null, ['http://localhost:8080', 'http://localhost:8081']);
-  },
+  origin: 'http://localhost:8080',
   credentials: true
 }
 server.use(cors(options));
