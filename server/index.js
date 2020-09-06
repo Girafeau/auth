@@ -28,10 +28,14 @@ server.use(parser.urlencoded({
 }));
 server.use(parser.json());
 server.use(express.static('dist'));
-server.use(cors({
-  origin: ["http://localhost:8080", "http://localhost:8081"],
-  credentials: true,
-}));
+const options = {
+  origin: function(origin, callback) {
+    // Appel à la base de données
+    callback(error, ['http://localhost:8080', 'http://localhost:8080']);
+  },
+  credentials: true
+}
+server.use(cors(options));
 
 server.get('/authenticate', function(req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
