@@ -53,7 +53,7 @@
                     </div>
 
                     <div class="column">
-                      <img src="clip-internet-security.png"/>
+                      
                     </div>
                 </div>
 

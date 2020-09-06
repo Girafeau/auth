@@ -1,5 +1,5 @@
 const express = require('express');
-const parser = require('body-parser');
+const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
@@ -25,10 +25,10 @@ mongoose.connection.on("connected", function(err, res) {
 const server = express();
 const port = process.env.PORT || 8000;
 
-server.use(parser.urlencoded({
+server.use(bodyParser.urlencoded({
   extended: false
 }));
-server.use(parser.json());
+server.use(bodyParser.json());
 server.use(express.static('dist'));
 const options = {
   origin: function(origin, callback) {
