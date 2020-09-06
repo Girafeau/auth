@@ -29,7 +29,7 @@ server.use(parser.urlencoded({
 server.use(parser.json());
 server.use(express.static('dist'));
 server.use(cors({
-  preflightContinue: true,
+  origin: ["http://localhost:8080", "http://localhost:8081"],
   credentials: true,
 }));
 
