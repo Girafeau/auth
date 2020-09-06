@@ -2,6 +2,8 @@ const express = require('express');
 const parser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
+const cookieParser = require('cookie-parser');
+
 
 const mongoose = require('mongoose');
 
@@ -36,6 +38,7 @@ const options = {
   credentials: true
 }
 server.use(cors(options));
+server.use(cookieParser());
 
 server.get('/authenticate', function(req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'));

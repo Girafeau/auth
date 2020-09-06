@@ -5,6 +5,7 @@ const validation = require('yup');
 const isBefore = require('date-fns/isBefore');
 const addSeconds = require('date-fns/addSeconds');
 const jwt = require('jsonwebtoken');
+
 const secret = process.env.SECRET;
 const expiry = 60 * 60 * 24;
 
@@ -93,7 +94,7 @@ module.exports = function(server) {
         }, res.locals.client_id, res.locals.user_id);
 
         if(object) {
-            res.setHeader('Set-Cookie', `token=${object.access_token}; HttpOnly`);
+            res.cookie('token', 'Bearer ' + object.access_token, {secure: true, httpOnly: true});
             res.status(200).send({
                 access_token: object.access_token,
                 token_type: 'Bearer',
