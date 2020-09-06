@@ -29,7 +29,10 @@ server.use(parser.urlencoded({
 server.use(parser.json());
 server.use(express.static('dist'));
 const options = {
-  origin: 'http://localhost:8080',
+  origin: function(origin, callback) {
+    // Appel à la base de données
+    callback(null, ['https://mp-mp3.herokuapp.com']);
+  },
   credentials: true
 }
 server.use(cors(options));
