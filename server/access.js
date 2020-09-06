@@ -42,6 +42,7 @@ module.exports = function(server) {
         const {client_id, client_secret} = req.body;
         const object = await clients.get(client_id, client_secret); // Problème ici
         if (object) {
+          console.log(object);
             res.locals.client_id = object._id;
             return next();
         } else {
@@ -92,6 +93,7 @@ module.exports = function(server) {
         }, res.locals.client_id, res.locals.user_id);
 
         if(object) {
+            res.setHeader('Set-Cookie', `token=${object.access_token}; HttpOnly`);
             res.status(200).send({
                 access_token: object.access_token,
                 token_type: 'Bearer',
