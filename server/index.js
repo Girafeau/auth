@@ -31,7 +31,7 @@ server.use(express.static('dist'));
 const options = {
   origin: function(origin, callback) {
     // Appel à la base de données
-    callback(error, ['http://localhost:8080', 'http://localhost:8080']);
+    callback(null, ['http://localhost:8080', 'http://localhost:8081']);
   },
   credentials: true
 }
