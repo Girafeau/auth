@@ -94,7 +94,7 @@ module.exports = function(server) {
         }, res.locals.client_id, res.locals.user_id);
 
         if(object) {
-            res.cookie('token', 'Bearer ' + object.access_token, {secure: true, httpOnly: true});
+            res.cookie('token', 'Bearer ' + object.access_token, {secure: true, httpOnly: true, domain: 'https://mp-mp3.herokuapp.com'});
             res.status(200).send({
                 access_token: object.access_token,
                 token_type: 'Bearer',
