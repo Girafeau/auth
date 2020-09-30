@@ -24,7 +24,7 @@ const schema = validation.object().shape({
 module.exports = function(server) {
 
      /*
-        Requête POST /request/authorize
+        @request POST /request/authorize
 
         @params
             email : L'email de l'utilisateur.
