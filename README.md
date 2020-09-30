@@ -5,7 +5,7 @@ GET /authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_cod
 ```
 
 ```
-POST /request/authorize
+POST /request/access
 
 {
     "client_id": <ID>,
