@@ -27,17 +27,17 @@ module.exports = function(server) {
         @request POST /request/authorize
 
         @params
-            email : L'email de l'utilisateur.
-            password : Le mot de passe de l'utilisateur.
-            client_id : L'identifiant du client.
-            redirect_uri : L'URI de redirection.
-            response_type: Le type de réponse.
-            authorization_code : Le code d'autorisation.
-            state: L'état du service.
+            email : email de l'utilisateur
+            password : mot de passe de l'utilisateur
+            client_id : identifiant du client
+            redirect_uri : URI de redirection
+            response_type: type de réponse
+            authorization_code : code d'autorisation
+            state: état du service
 
         @return
-            redirect_uri: L'URI de redirection.
-            authorization_code: Le code d'autorisation.
+            redirect_uri: URI de redirection
+            authorization_code: code d'autorisation
     */
     server.post('/request/authorize', function (req, res, next) {
          /*

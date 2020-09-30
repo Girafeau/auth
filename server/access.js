@@ -19,18 +19,18 @@ const schema = validation.object().shape({
 module.exports = function(server) {
 
     /*
-        Requête POST /request/access
+        @request POST /request/access
 
         @params
-            client_id : L'identifiant du client.
-            client_secret : Le secret du client.
-            grant_type : Le type d'attribution du token.
-            authorization_code : Le code d'autorisation.
+            client_id : identifiant du client
+            client_secret : secret du client
+            grant_type : type d'attribution du token
+            authorization_code : code d'autorisation
 
         @return
-            access_token: Le token d'authentification.
-            token_type: Le type de token.
-            expires_in: Le temps d'expiration du token.
+            access_token: token d'authentification
+            token_type: type de token
+            expires_in: temps d'expiration du token
     */
     server.post('/request/access', function (req, res, next) {
         /*
