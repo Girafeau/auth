@@ -4,6 +4,13 @@ const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
 
+const options = {
+  origin: function(origin, callback) {
+    // A faire
+    callback(null, ['https://mp-mp3.herokuapp.com']);
+  },
+  credentials: true
+}
 
 const mongoose = require('mongoose');
 
@@ -30,13 +37,6 @@ server.use(bodyParser.urlencoded({
 }));
 server.use(bodyParser.json());
 server.use(express.static('dist'));
-const options = {
-  origin: function(origin, callback) {
-    // Appel à la base de données
-    callback(null, ['https://mp-mp3.herokuapp.com']);
-  },
-  credentials: true
-}
 server.use(cors(options));
 server.use(cookieParser());
 
@@ -44,11 +44,9 @@ server.get('/authenticate', function(req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 
-
 require('./access')(server);
 require('./authorize')(server);
 require('./secure')(server);
-
 
 server.listen(port, () => {
   console.log(`Le serveur écoute sur le port ${port}.`);
