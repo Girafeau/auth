@@ -38,8 +38,8 @@ module.exports = function(server) {
                 state: état du service
 
         @return
-            redirect_uri : URI de redirection
-            authorization_code : code d'autorisation
+            redirect_uri: URI de redirection
+            authorization_code: code d'autorisation
     */
     server.post('/request/authorize', function (req, res, next) {
          /*
