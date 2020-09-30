@@ -23,7 +23,26 @@ const schema = validation.object().shape({
 
 module.exports = function(server) {
 
+     /*
+        Requête POST /request/authorize
+
+        @params
+            email : L'email de l'utilisateur.
+            password : Le mot de passe de l'utilisateur.
+            client_id : L'identifiant du client.
+            redirect_uri : L'URI de redirection.
+            response_type: Le type de réponse.
+            authorization_code : Le code d'autorisation.
+            state: L'état du service.
+
+        @return
+            redirect_uri: L'URI de redirection.
+            authorization_code: Le code d'autorisation.
+    */
     server.post('/request/authorize', function (req, res, next) {
+         /*
+            Vérifie les paramètres de la requête POST.
+        */
         schema.isValid(req.body).then(function (valid) {
             if (!valid) {
                 res.status(400).send({
@@ -35,6 +54,9 @@ module.exports = function(server) {
             }
         });
     }, function (req, res, next) {
+        /*
+            Vérifie le type d'attribution du token.
+        */
         const {request} = req.body;
         if(request.grant_type !== 'authorization_code') {
             res.status(400).send({
@@ -45,6 +67,9 @@ module.exports = function(server) {
             return next();
         }
     }, function (req, res, next) {
+        /*
+            Vérifie le type de réponse.
+        */
         const {request} = req.body;
         if(request.response_type !== 'code') {
             res.status(400).send({
@@ -55,6 +80,9 @@ module.exports = function(server) {
             return next();
         }
     }, async function (req, res, next) {
+        /*
+            Vérifie les informations de l'utilisateur.
+        */
         const {user} = req.body;
         const object = await users.get(user.email);
         if (!object) {
@@ -76,6 +104,9 @@ module.exports = function(server) {
             });
         }
     }, async function (req, res, next) {
+         /*
+            Vérifie les informations du client.
+        */
         const {request} = req.body;
         const object = await clients.get(request.client_id);
         if (!object) {
@@ -88,6 +119,9 @@ module.exports = function(server) {
             return next();
         }
     }, async function (req, res) {
+         /*
+            Génére le code d'autorisation.
+        */
         const {request} = req.body;
         let expiration = format(addHours(new Date(), 1));
         const object = await codes.save({

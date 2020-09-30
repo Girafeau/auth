@@ -18,7 +18,24 @@ const schema = validation.object().shape({
 
 module.exports = function(server) {
 
+    /*
+        Requête POST /request/access
+
+        @params
+            client_id : L'identifiant du client.
+            client_secret : Le secret du client.
+            grant_type : Le type d'attribution du token.
+            authorization_code : Le code d'autorisation.
+
+        @return
+            access_token: Le token d'authentification.
+            token_type: Le type de token.
+            expires_in: Le temps d'expiration du token.
+    */
     server.post('/request/access', function (req, res, next) {
+        /*
+            Vérifie les paramètres de la requête POST.
+        */
         schema.isValid(req.body).then(function (valid) {
             if (!valid) {
                 res.status(400).send({
@@ -30,6 +47,9 @@ module.exports = function(server) {
             }
         });
     }, function (req, res, next) {
+        /*
+            Vérifie le type d'attribution du token.
+        */
         const {grant_type} = req.body;
         if(grant_type !== 'authorization_code') {
             res.status(400).send({
@@ -40,6 +60,9 @@ module.exports = function(server) {
             return next();
         }
     }, async function (req, res, next) {
+        /*
+            Vérifie les informations du client.
+        */
         const {client_id, client_secret} = req.body;
         const object = await clients.get(client_id, client_secret); // Problème ici à régler
         if (!object) {
@@ -52,6 +75,9 @@ module.exports = function(server) {
             return next();
         }
     }, async function (req, res, next) {
+        /*
+            Vérifie le code d'autorisation.
+        */
         const {authorization_code} = req.body;
         const object = await codes.get(authorization_code);
         if (!object) {
@@ -72,12 +98,18 @@ module.exports = function(server) {
             }
         }
     }, async function (req, res, next) {
+        /*
+            Supprime le code d'autorisation utilisé.
+        */
         const {authorization_code} = req.body;
         const object = await codes.revoke(authorization_code);
         if (object) {
             return next();
         }
     }, async function (req, res)  {
+        /*
+            Génére un token.
+        */
         const {authorization_code} = req.body;
         const token = jwt.sign({
             client_id: res.locals.client_id,
@@ -92,6 +124,7 @@ module.exports = function(server) {
         }, res.locals.client_id, res.locals.user_id);
         if(object) {
             res.status(200).send({
+                success: true,
                 access_token: object.access_token,
                 token_type: 'Bearer',
                 expires_in: expiry
