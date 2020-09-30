@@ -22,10 +22,10 @@ module.exports = function(server) {
         @request POST /request/access
 
         @params
-            client_id : identifiant du client
-            client_secret : secret du client
-            grant_type : type d'attribution du token
-            authorization_code : code d'autorisation
+            client_id: identifiant du client
+            client_secret: secret du client
+            grant_type: type d'attribution du token
+            authorization_code: code d'autorisation
 
         @return
             access_token: token d'authentification
