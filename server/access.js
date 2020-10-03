@@ -18,23 +18,9 @@ const schema = validation.object().shape({
 
 module.exports = function(server) {
 
-    /*
-        @request POST /request/access
-
-        @params
-            client_id: identifiant du client
-            client_secret: secret du client
-            grant_type: type d'attribution du token
-            authorization_code: code d'autorisation
-
-        @return
-            access_token: token d'authentification
-            token_type: type de token
-            expires_in: temps d'expiration du token
-    */
     server.post('/request/access', function (req, res, next) {
         /*
-            Vérifie les paramètres de la requête POST.
+            Vérifie les paramètres de la requête.
         */
         schema.isValid(req.body).then(function (valid) {
             if (!valid) {
@@ -111,17 +97,20 @@ module.exports = function(server) {
             Génére un token.
         */
         const {authorization_code} = req.body;
+
         const token = jwt.sign({
             client_id: res.locals.client_id,
             user_id: res.locals.user_id,
             authorization_code: authorization_code
         }, secret, {expiresIn: expiry});
+
         const object = await tokens.save({
             access_token: token,
             access_token_expires_at: addSeconds(new Date(), expiry),
             refresh_token: null,
             refresh_token_expires_at: null,
         }, res.locals.client_id, res.locals.user_id);
+        
         if(object) {
             res.status(200).send({
                 success: true,

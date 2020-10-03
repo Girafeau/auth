@@ -3,14 +3,7 @@ const bodyParser = require('body-parser');
 const path = require('path');
 const cors = require('cors');
 const cookieParser = require('cookie-parser');
-
-const options = {
-  origin: function(origin, callback) {
-    // A faire
-    callback(null, ['https://mp-mp3.herokuapp.com']);
-  },
-  credentials: true
-}
+const clients = require('../database/clients');
 
 const mongoose = require('mongoose');
 
@@ -28,6 +21,14 @@ mongoose.connection.on("error", function(err) {
 mongoose.connection.on("connected", function(err, res) {
   console.log('Connecté à : ' + uri);
 });
+
+const options = {
+  origin: function(origin, callback) {
+    const domains = clients.getDomains();
+    callback(null, domains);
+  },
+  credentials: true
+}
 
 const server = express();
 const port = process.env.PORT || 8000;

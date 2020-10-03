@@ -23,27 +23,9 @@ const schema = validation.object().shape({
 
 module.exports = function(server) {
 
-     /*
-        @request POST /request/authorize
-
-        @params
-            user: 
-                email: email de l'utilisateur
-                password: mot de passe de l'utilisateur
-            request:
-                client_id: identifiant du client
-                redirect_uri: URI de redirection
-                response_type: type de réponse
-                authorization_code: code d'autorisation
-                state: état du service
-
-        @return
-            redirect_uri: URI de redirection
-            authorization_code: code d'autorisation
-    */
     server.post('/request/authorize', function (req, res, next) {
          /*
-            Vérifie les paramètres de la requête POST.
+            Vérifie les paramètres de la requête.
         */
         schema.isValid(req.body).then(function (valid) {
             if (!valid) {
@@ -107,7 +89,7 @@ module.exports = function(server) {
         }
     }, async function (req, res, next) {
          /*
-            Vérifie les informations du client.
+            Vérifie les informations du client et l'uri de redirection.
         */
         const {request} = req.body;
         const object = await clients.get(request.client_id);
@@ -117,8 +99,15 @@ module.exports = function(server) {
                 message: 'invalid client'
             });
         } else {
-            res.locals.client_id = object._id;
-            return next();
+            if(!object.redirect_uris.includes(request.redirect_uri)) {
+                res.status(400).send({
+                    success: false,
+                    message: 'redirect uri not allowed'
+                });
+            } else {
+                res.locals.client_id = object._id;
+                return next();
+            }
         }
     }, async function (req, res) {
          /*
@@ -126,12 +115,14 @@ module.exports = function(server) {
         */
         const {request} = req.body;
         let expiration = format(addHours(new Date(), 1));
+
         const object = await codes.save({
             authorization_code: uuid(),
             expires_at: expiration,
             redirect_uri: request.redirect_uri,
             scope: 'not implemented yet',
         }, res.locals.client_id, res.locals.user_id);
+
         if (object) {
             res.status(200).send({
                 success: true,
