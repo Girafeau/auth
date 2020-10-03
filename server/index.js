@@ -22,6 +22,14 @@ mongoose.connection.on("connected", function (err, res) {
   console.log('Connecté à : ' + uri);
 });
 
+const options = {
+  origin: async function(origin, callback) {
+    const domains = await clients.getDomains();
+    callback(null, domains);
+  },
+  credentials: true
+}
+
 const server = express();
 const port = process.env.PORT || 8000;
 
@@ -30,7 +38,7 @@ server.use(bodyParser.urlencoded({
 }));
 server.use(bodyParser.json());
 server.use(express.static('dist'));
-server.use(cors());
+server.use(cors(options));
 server.use(cookieParser());
 
 server.get('/authenticate', function (req, res) {
