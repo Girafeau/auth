@@ -2,7 +2,7 @@ const bcrypt = require('bcrypt');
 const users = require('../database/users');
 const clients = require('../database/clients');
 const codes = require('../database/codes');
-const {v4: uuid} = require('uuid');
+const { v4: uuid } = require('uuid');
 const validation = require('yup');
 const addHours = require('date-fns/addHours');
 const format = require('date-fns/formatISO');
@@ -21,12 +21,12 @@ const schema = validation.object().shape({
     })
 });
 
-module.exports = function(server) {
+module.exports = function (server) {
 
     server.post('/request/authorize', function (req, res, next) {
-         /*
-            Vérifie les paramètres de la requête.
-        */
+        /*
+           Vérifie les paramètres de la requête.
+       */
         schema.isValid(req.body).then(function (valid) {
             if (!valid) {
                 res.status(400).send({
@@ -41,8 +41,8 @@ module.exports = function(server) {
         /*
             Vérifie le type d'attribution du token.
         */
-        const {request} = req.body;
-        if(request.grant_type !== 'authorization_code') {
+        const { request } = req.body;
+        if (request.grant_type !== 'authorization_code') {
             res.status(400).send({
                 success: false,
                 message: 'invalid grant type'
@@ -54,8 +54,8 @@ module.exports = function(server) {
         /*
             Vérifie le type de réponse.
         */
-        const {request} = req.body;
-        if(request.response_type !== 'code') {
+        const { request } = req.body;
+        if (request.response_type !== 'code') {
             res.status(400).send({
                 success: false,
                 message: 'invalid response type'
@@ -67,7 +67,7 @@ module.exports = function(server) {
         /*
             Vérifie les informations de l'utilisateur.
         */
-        const {user} = req.body;
+        const { user } = req.body;
         const object = await users.get(user.email);
         if (!object) {
             res.status(400).send({
@@ -88,10 +88,10 @@ module.exports = function(server) {
             });
         }
     }, async function (req, res, next) {
-         /*
-            Vérifie les informations du client et l'uri de redirection.
-        */
-        const {request} = req.body;
+        /*
+           Vérifie les informations du client et l'uri de redirection.
+       */
+        const { request } = req.body;
         const object = await clients.get(request.client_id);
         if (!object) {
             res.status(400).send({
@@ -99,7 +99,7 @@ module.exports = function(server) {
                 message: 'invalid client'
             });
         } else {
-            if(!object.redirect_uris.includes(request.redirect_uri)) {
+            if (!object.redirect_uris.includes(request.redirect_uri)) {
                 res.status(400).send({
                     success: false,
                     message: 'redirect uri not allowed'
@@ -110,17 +110,17 @@ module.exports = function(server) {
             }
         }
     }, async function (req, res) {
-         /*
-            Génére le code d'autorisation.
-        */
-        const {request} = req.body;
+        /*
+           Génére le code d'autorisation.
+       */
+        const { request } = req.body;
         let expiration = format(addHours(new Date(), 1));
 
         const object = await codes.save({
             authorization_code: uuid(),
             expires_at: expiration,
             redirect_uri: request.redirect_uri,
-            scope: 'not implemented yet',
+            scope: 'none',
         }, res.locals.client_id, res.locals.user_id);
 
         if (object) {

@@ -14,21 +14,13 @@ mongoose.connect(uri, {
   useUnifiedTopology: "true"
 });
 
-mongoose.connection.on("error", function(err) {
+mongoose.connection.on("error", function (err) {
   console.log('Problème de connexion à : ' + uri + '. ' + err);
 });
 
-mongoose.connection.on("connected", function(err, res) {
+mongoose.connection.on("connected", function (err, res) {
   console.log('Connecté à : ' + uri);
 });
-
-const options = {
-  origin: function(origin, callback) {
-    const domains = clients.getDomains();
-    callback(null, domains);
-  },
-  credentials: true
-}
 
 const server = express();
 const port = process.env.PORT || 8000;
@@ -38,10 +30,10 @@ server.use(bodyParser.urlencoded({
 }));
 server.use(bodyParser.json());
 server.use(express.static('dist'));
-server.use(cors(options));
+server.use(cors());
 server.use(cookieParser());
 
-server.get('/authenticate', function(req, res) {
+server.get('/authenticate', function (req, res) {
   res.sendFile(path.join(__dirname, '../dist/index.html'));
 });
 

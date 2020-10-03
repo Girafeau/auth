@@ -16,7 +16,7 @@ const schema = validation.object().shape({
     authorization_code: validation.string().required(),
 });
 
-module.exports = function(server) {
+module.exports = function (server) {
 
     server.post('/request/access', function (req, res, next) {
         /*
@@ -36,8 +36,8 @@ module.exports = function(server) {
         /*
             Vérifie le type d'attribution du token.
         */
-        const {grant_type} = req.body;
-        if(grant_type !== 'authorization_code') {
+        const { grant_type } = req.body;
+        if (grant_type !== 'authorization_code') {
             res.status(400).send({
                 success: false,
                 message: 'invalid grant type'
@@ -49,7 +49,7 @@ module.exports = function(server) {
         /*
             Vérifie les informations du client.
         */
-        const {client_id, client_secret} = req.body;
+        const { client_id, client_secret } = req.body;
         const object = await clients.get(client_id, client_secret); // Problème ici à régler
         if (!object) {
             res.status(400).send({
@@ -64,7 +64,7 @@ module.exports = function(server) {
         /*
             Vérifie le code d'autorisation.
         */
-        const {authorization_code} = req.body;
+        const { authorization_code } = req.body;
         const object = await codes.get(authorization_code);
         if (!object) {
             res.status(400).send({
@@ -87,22 +87,22 @@ module.exports = function(server) {
         /*
             Supprime le code d'autorisation utilisé.
         */
-        const {authorization_code} = req.body;
+        const { authorization_code } = req.body;
         const object = await codes.revoke(authorization_code);
         if (object) {
             return next();
         }
-    }, async function (req, res)  {
+    }, async function (req, res) {
         /*
             Génére un token.
         */
-        const {authorization_code} = req.body;
+        const { authorization_code } = req.body;
 
         const token = jwt.sign({
             client_id: res.locals.client_id,
             user_id: res.locals.user_id,
             authorization_code: authorization_code
-        }, secret, {expiresIn: expiry});
+        }, secret, { expiresIn: expiry });
 
         const object = await tokens.save({
             access_token: token,
@@ -110,8 +110,8 @@ module.exports = function(server) {
             refresh_token: null,
             refresh_token_expires_at: null,
         }, res.locals.client_id, res.locals.user_id);
-        
-        if(object) {
+
+        if (object) {
             res.status(200).send({
                 success: true,
                 access_token: object.access_token,
