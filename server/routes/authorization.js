@@ -1,29 +1,16 @@
 const bcrypt = require('bcrypt');
-const users = require('../database/users');
-const clients = require('../database/clients');
-const codes = require('../database/codes');
+const users = require('../../database/users');
+const clients = require('../../database/clients');
+const codes = require('../../database/codes');
 const { v4: uuid } = require('uuid');
-const validation = require('yup');
-const addHours = require('date-fns/addHours');
-const format = require('date-fns/formatISO');
+const schema = require('../validation/authorization');
 
-const schema = validation.object().shape({
-    user: validation.object().shape({
-        email: validation.string().email().required(),
-        password: validation.string().required()
-    }),
-    request: validation.object().shape({
-        client_id: validation.string().required(),
-        redirect_uri: validation.string().url().required(),
-        response_type: validation.string().required(),
-        grant_type: validation.string().required(),
-        state: validation.string().nullable()
-    })
-});
+const config = require('../config');
+const expiry = config.token.access.expiry;
 
 module.exports = function (server) {
 
-    server.post('/request/authorize', function (req, res, next) {
+    server.post('/authorization', function (req, res, next) {
         /*
            Vérifie les paramètres de la requête.
        */
@@ -76,7 +63,7 @@ module.exports = function (server) {
             });
         } else {
             res.locals.user_id = object._id;
-            bcrypt.compare(user.password, object.password, function (err, result) {
+            bcrypt.compare(user.password, object.password, function (err) {
                 if (err) {
                     res.status(400).send({
                         success: false,
@@ -114,20 +101,22 @@ module.exports = function (server) {
            Génére le code d'autorisation.
        */
         const { request } = req.body;
-        let expiration = format(addHours(new Date(), 1));
+        let date = new Date();
+        date.setSeconds(date.getSeconds() + expiry);
 
         const object = await codes.save({
             authorization_code: uuid(),
-            expires_at: expiration,
+            expires_at: date,
             redirect_uri: request.redirect_uri,
-            scope: 'none',
+            scope: 'access',
         }, res.locals.client_id, res.locals.user_id);
 
         if (object) {
-            res.status(200).send({
+            res.status(201).send({
                 success: true,
                 redirect_uri: object.redirect_uri,
-                authorization_code: object.authorization_code
+                authorization_code: object.authorization_code,
+                state: request.state
             });
         }
     });

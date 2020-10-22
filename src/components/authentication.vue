@@ -101,6 +101,7 @@
                 if (response.success) {
                     const url = new URL(response.redirect_uri);
                     url.searchParams.append('authorization_code', response.authorization_code);
+                    url.searchParams.append('state', response.state);
                     window.location.href = url.toString();
                 } else {
                     console.log(response)

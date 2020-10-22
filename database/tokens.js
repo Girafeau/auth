@@ -32,3 +32,7 @@ module.exports.save = function(token, client_id, user_id) {
 
     return entry.save();
 };
+
+module.exports.update = function(refresh_token, access_token) {
+    return tokens.updateOne({refresh_token: refresh_token}, {$set: {access_token: access_token}});
+}
