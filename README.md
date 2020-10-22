@@ -2,12 +2,12 @@
 
 ### Documentation
 
-#### • Obtenir le formulaire de connexion
+#### 1. Obtenir le formulaire de connexion
 ```
 GET /authentication?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
 ```
 
-#### • Récupérer les tokens avec le code d'autorisation
+#### 2. Récupérer les tokens avec le code d'autorisation
 ```
 POST /access
 
@@ -19,12 +19,12 @@ POST /access
 }
 ```
 
-#### • Accèder aux informations protégées
+#### 3. Accèder aux informations protégées
 ```
 GET /user?id=<ID>
 ```
 
-#### • Rafraîchir son token d'accès
+#### 4. Rafraîchir son token d'accès
 ```
 POST /access
 
