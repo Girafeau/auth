@@ -29,7 +29,7 @@ module.exports = function (server) {
             Vérifie les informations du client.
         */
         const { client_id, client_secret } = req.body;
-        const object = await clients.getWithSecret(client_id, client_secret); // Problème ici à régler
+        const object = await clients.getWithSecret(client_id, client_secret);
         if (!object) {
             res.status(400).send({
                 success: false,
@@ -85,16 +85,20 @@ module.exports = function (server) {
                             let refresh_token_date = new Date();
                             refresh_token_date.setSeconds(refresh_token_date.getSeconds() + token.refresh.expiry);
 
+                            let access_token = jwt.sign({
+                                client_id: res.locals.client_id,
+                                user_id: res.locals.user_id
+                            }, token.secret, { expiresIn: token.access.expiry });
+
+                            let refresh_token = jwt.sign({
+                                client_id: res.locals.client_id,
+                                user_id: res.locals.user_id
+                            }, token.secret, { expiresIn: token.refresh.expiry });
+
                             const object = await tokens.save({
-                                access_token: jwt.sign({
-                                    client_id: res.locals.client_id,
-                                    user_id: res.locals.user_id
-                                }, token.secret, { expiresIn: token.access.expiry }),
+                                access_token: access_token,
                                 access_token_expires_at: access_token_date,
-                                refresh_token: jwt.sign({
-                                    client_id: res.locals.client_id,
-                                    user_id: res.locals.user_id
-                                }, token.secret, { expiresIn: token.refresh.expiry }),
+                                refresh_token: refresh_token,
                                 refresh_token_expires_at: refresh_token_date,
                             }, res.locals.client_id, res.locals.user_id);
 
@@ -136,6 +140,7 @@ module.exports = function (server) {
                                 client_id: res.locals.client_id,
                                 user_id: res.locals.user_id
                             }, token.secret, { expiresIn: token.access.expiry });
+
                             const object = await tokens.update(refresh_token, access_token);
                             if(object) {
                                 res.status(200).send({
