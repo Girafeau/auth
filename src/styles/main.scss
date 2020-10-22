@@ -4,29 +4,33 @@ $family-sans-serif: 'Varela Round', sans-serif;
 $control-border-width: 2px;
 
 $radius: 5px;
-$input-focus-box-shadow-color:#e8eaec;
+$input-focus-box-shadow-color:#F2F3F5;
 $label-weight: 500;
 $input-shadow: none;
 $title-weight: 500;
-$input-focus-border-color: #e8eaec;
-$input-border-color: #e8eaec;
-$input-hover-border-color: #e8eaec;
+$input-focus-border-color: #F2F3F5;
+$input-border-color: #F2F3F5;
+$input-hover-border-color: #F2F3F5;
 $link: rgb(231, 37, 53);
-$input-background-color: #e8eaec;
+$input-background-color: #F2F3F5;
 
+::placeholder {
+  opacity: 1;
+}
 
 html, body {
   height: 100%;
   width: 100%;
   padding: 0;
   margin: 0;
+  overflow-y:hidden !important;
 }
 
 body {
   margin: 0 auto;
 }
 hr {
-  background-color: #e8eaec !important;
+  background-color: #e7e7e7 !important;
   height: 1px !important;
 }
 
