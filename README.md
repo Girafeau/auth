@@ -1,11 +1,11 @@
 # Service d'authentification ☂️
 
-1. Formulaire de connexion
+#### • *Obtenir le formulaire de connexion*
 ```
 GET /authentication?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
 ```
 
-2. Récupérer le token avec le code d'autorisation
+#### • *Récupérer les tokens avec le code d'autorisation*
 ```
 POST /access
 
@@ -17,12 +17,12 @@ POST /access
 }
 ```
 
-3. Accéder aux resources privées
+#### • *Accèder aux informations protégées*
 ```
-GET /secure
+GET /user?id=<ID>
 ```
 
-4. Rafraichir son token
+#### • *Rafraîchir son token d'accès*
 ```
 POST /access
 
