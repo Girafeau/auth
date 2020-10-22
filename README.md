@@ -1,4 +1,4 @@
-# Service d'authentification ☂️
+# Service d'authentification 🐮
 
 ### Documentation
 
