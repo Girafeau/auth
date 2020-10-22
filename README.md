@@ -1,7 +1,7 @@
-# Service d'authentification OAuth2 ☂️
+# Service d'authentification ☂️
 
 ```
-GET /authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code
+GET /authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
 ```
 
 ```
