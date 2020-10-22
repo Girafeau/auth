@@ -21,7 +21,7 @@ POST /access
 
 #### 3. Accèder aux informations protégées
 ```
-GET /user?id=<ID>
+GET /user
 ```
 
 #### 4. Rafraîchir son token d'accès
