@@ -1,11 +1,11 @@
 # Service d'authentification ☂️
 
 ```
-GET /authenticate?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
+GET /authentication?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
 ```
 
 ```
-POST /request/access
+POST /access
 
 {
     "client_id": <ID>,
@@ -16,5 +16,5 @@ POST /request/access
 ```
 
 ```
-GET /request/secure
+GET /secure
 ```
