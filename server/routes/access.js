@@ -62,7 +62,6 @@ module.exports = function (server) {
                         message: 'invalid authorization code'
                     });
                 } else {
-                    res.locals.user_id = object.user_id;
                     res.locals.client_id = object.client_id;
                     if (!before(Date.now(), object.expires_at)) {
                         res.status(400).send({
@@ -126,7 +125,7 @@ module.exports = function (server) {
                         message: 'invalid refresh token'
                     });
                 } else {
-                    jwt.verify(refresh_token, token.secret, async function(err) {
+                    jwt.verify(refresh_token, token.secret, async function(err, decoded) {
                         if(err) {
                             res.status(401).send({
                                 success: false,
@@ -137,8 +136,8 @@ module.exports = function (server) {
                                 Met à jour le token d'accès.
                              */
                             let access_token = jwt.sign({
-                                client_id: res.locals.client_id,
-                                user_id: res.locals.user_id
+                                client_id: decoded.client_id,
+                                user_id: decoded.user_id
                             }, token.secret, { expiresIn: token.access.expiry });
 
                             const object = await tokens.update(refresh_token, access_token);

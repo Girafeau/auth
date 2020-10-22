@@ -1,5 +1,7 @@
+const users = require('../../database/users');
 const jwt = require('jsonwebtoken');
 const tokens = require('../../database/tokens');
+
 const config = require('../config');
 const token = config.token;
 
@@ -22,7 +24,7 @@ module.exports = function (server) {
         /*
               Vérifie la validité du token d'accès.
          */
-        jwt.verify(res.locals.token, token.secret, async function(err) {
+        jwt.verify(res.locals.token, token.secret, async function(err, decoded) {
             if (err) {
                 res.status(401).send({
                     success: false,
@@ -36,11 +38,13 @@ module.exports = function (server) {
                         message: 'invalid access token'
                     });
                 } else {
-                    res.status(200).send({
-                        success: true,
-                        client_id: object.client_id,
-                        user_id: object.user_id
-                    });
+                    const object = await users.get(decoded.user_id);
+                    if(object) {
+                        res.status(200).send({
+                            success: true,
+                            user: object
+                        });
+                    }
                 }
             }
         });

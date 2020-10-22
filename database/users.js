@@ -11,6 +11,6 @@ mongoose.model('users', new Schema({
 
 const users = mongoose.model('users');
 
-module.exports.get = function(email) {
-    return users.findOne({email: email});
+module.exports.get = function(id) {
+    return users.findOne({_id: id});
 };
