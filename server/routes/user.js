@@ -49,4 +49,6 @@ module.exports = function (server) {
             }
         });
     });
+
+    server.post('/user', )
 }

@@ -1,16 +1,19 @@
 @import url('https://fonts.googleapis.com/css2?family=Varela+Round&display=swap');
 
 $family-sans-serif: 'Varela Round', sans-serif;
-$control-border-width: 0px;
-$input-focus-box-shadow-size: 0 0 0 0;
-$radius: 7px;
-$input-border-color: whitesmoke;
-$input-focus-border-color: whitesmoke;
+$control-border-width: 2px;
+
+$radius: 5px;
+$input-focus-box-shadow-color:#e8eaec;
 $label-weight: 500;
 $input-shadow: none;
 $title-weight: 500;
-$input-background-color: whitesmoke;
-$link: #5222D0;
+$input-focus-border-color: #e8eaec;
+$input-border-color: #e8eaec;
+$input-hover-border-color: #e8eaec;
+$link: rgb(231, 37, 53);
+$input-background-color: #e8eaec;
+
 
 html, body {
   height: 100%;
@@ -22,19 +25,13 @@ html, body {
 body {
   margin: 0 auto;
 }
+hr {
+  background-color: #e8eaec !important;
+  height: 1px !important;
+}
 
 .hero-body .container {
 
-}
-
-.pop {
-  border: whitesmoke 1px solid;
-  padding: 3em;
-  padding-top: 8em;
-  padding-bottom: 8em;
-  -webkit-box-shadow: 5px 5px 20px 0px whitesmoke;
-  -moz-box-shadow: 5px 5px 20px 0px whitesmoke;
-  box-shadow: 5px 5px 20px 0px whitesmoke;
 }
 
 .control .icon {
@@ -47,6 +44,10 @@ body {
 
 .has-margin-top {
   margin-top: 2em;
+}
+
+.has-margin-bottom{
+  margin-bottom: 2em;
 }
 
 .underline {

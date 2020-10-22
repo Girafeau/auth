@@ -1,17 +1,14 @@
 <template>
     <div>
-        <authentication/>
+        <router-view></router-view>
     </div>
 </template>
 
 <script>
-    import authentication from './components/authentication.vue';
 
     export default {
-        name: 'index',
-        components: {
-            authentication
-        }
+        name: 'index'
+
     }
 </script>
 
