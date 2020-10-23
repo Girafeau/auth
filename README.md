@@ -1,15 +1,15 @@
-# Service d'authentification 🐮
+# Service d'authentification 🐑
 
 ### Documentation
 
 #### 1. Obtenir le formulaire de connexion
 ```
-GET /authentication?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
+GET /signin?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
 ```
 
 #### 2. Récupérer les tokens avec le code d'autorisation
 ```
-POST /access
+POST /token
 
 {
     "client_id": <ID>,
@@ -21,12 +21,12 @@ POST /access
 
 #### 3. Accèder aux informations protégées
 ```
-GET /user
+GET /user/<ID>
 ```
 
 #### 4. Rafraîchir son token d'accès
 ```
-POST /access
+POST /token
 
 {
     "client_id": <ID>,
