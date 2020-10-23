@@ -1,54 +1,84 @@
 const users = require('../../database/users');
 const jwt = require('jsonwebtoken');
 const tokens = require('../../database/tokens');
+const secure = require('../secure');
+const schema = require('../schemas/user');
+const bcrypt = require('bcrypt');
+const salt = 10;
 
 const config = require('../config');
 const token = config.token;
 
 module.exports = function (server) {
 
-    server.get('/user', function (req, res, next) {
-        /*
-            Vérifie la présence du token d'accès.
-         */
-        if (!req.headers.authorization || req.headers.authorization.split(' ')[0] !== 'Bearer') {
-            res.status(401).send({
+    server.get('/user/:id', secure, async function (req, res, next) {
+        const object = await users.get(res.locals.token.user_id);
+        if(!object) {
+            res.status(404).send({
                 success: false,
-                message: 'missing access token'
+                message: "no user"
             });
         } else {
-            res.locals.token = req.headers.authorization.split(' ')[1];
+            if(req.params.id !== res.locals.token.user_id) {
+                res.status(403).send({
+                    success: false,
+                    message: "unallowed to access user"
+                });
+            }  else {
+                res.status(200).send({
+                    success: true,
+                    user: object
+                });
+            }      
+        }     
+    });
+                  
+
+    server.post('/user', function(req, res, next) {
+         /*
+            Vérifie les paramètres de la requête.
+        */
+       schema.isValid(req.body).then(function (valid) {
+            if (!valid) {
+                res.status(400).send({
+                    success: false,
+                    message: 'missing or invalid parameters'
+                });
+            } else {
+                return next();
+            }
+        });
+    }, async function(req, res, next) {
+        /*
+            Vérifie que l'adresse e-mail n'est pas utilisée.
+        */
+        const { email } = req.body;
+        const object = await users.getByEmail(email);
+        if(object) {
+            res.status(400).send({
+                success: false,
+                message: 'already existing email'
+            });
+        } else {
             return next();
         }
     }, async function (req, res) {
         /*
-              Vérifie la validité du token d'accès.
-         */
-        jwt.verify(res.locals.token, token.secret, async function(err, decoded) {
-            if (err) {
-                res.status(401).send({
-                    success: false,
-                    message: 'invalid access token'
+        * Sauvegarde l'utilisateur.
+        */
+        const {password, email} = req.body; 
+        bcrypt.hash(password, salt, async function(err, hash) {
+            const user = {
+                email: email,
+                password: hash
+            };
+            const object = await users.save(user);
+            if(object) {
+                res.status(201).send({
+                    success: true,
+                    message: 'user created'
                 });
-            } else {
-                const object = await tokens.getAccessToken(res.locals.token);
-                if (!object) {
-                    res.status(401).send({
-                        success: false,
-                        message: 'invalid access token'
-                    });
-                } else {
-                    const object = await users.get(decoded.user_id);
-                    if(object) {
-                        res.status(200).send({
-                            success: true,
-                            user: object
-                        });
-                    }
-                }
             }
         });
     });
-
-    server.post('/user', )
 }

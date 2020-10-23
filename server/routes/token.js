@@ -3,14 +3,14 @@ const codes = require('../../database/codes');
 const tokens = require('../../database/tokens');
 const before = require('date-fns/isBefore');
 const jwt = require('jsonwebtoken');
-const schema = require('../validation/access');
+const schema = require('../schemas/token');
 
 const config = require('../config');
 const token = config.token;
 
 module.exports = function (server) {
 
-    server.post('/access', function (req, res, next) {
+    server.post('/token', function (req, res, next) {
         /*
             Vérifie les paramètres de la requête.
         */

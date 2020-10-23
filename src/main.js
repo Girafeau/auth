@@ -1,16 +1,16 @@
 import Vue from 'vue';
 import index from './index.vue';
 import VueRouter from 'vue-router';
-import authentication from "./components/authentication";
-import account from "./components/account";
+import signin from "./components/signin";
+import signup from "./components/signup";
 
 Vue.config.productionTip = false;
 
 Vue.use(VueRouter);
 
 const routes = [
-  { path: '/', component: authentication },
-  { path: '/account', component: account }
+  { path: '/signin', component: signin },
+  { path: '/signup', component: signup }
 ]
 
 const router = new VueRouter({

@@ -7,7 +7,7 @@ const schema = validation.object().shape({
     }),
     request: validation.object().shape({
         client_id: validation.string().required(),
-        redirect_uri: validation.string().url().required(),
+        redirect_uri: validation.string().required(),
         response_type: validation.string().required(),
         grant_type: validation.string().required(),
         state: validation.string().required()

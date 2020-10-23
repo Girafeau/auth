@@ -3,7 +3,7 @@ const users = require('../../database/users');
 const clients = require('../../database/clients');
 const codes = require('../../database/codes');
 const { v4: uuid } = require('uuid');
-const schema = require('../validation/authorization');
+const schema = require('../schemas/authorization');
 
 const config = require('../config');
 const expiry = config.token.access.expiry;
@@ -55,7 +55,7 @@ module.exports = function (server) {
             Vérifie les informations de l'utilisateur.
         */
         const { user } = req.body;
-        const object = await users.get(user.email);
+        const object = await users.getByEmail(user.email);
         if (!object) {
             res.status(400).send({
                 success: false,
