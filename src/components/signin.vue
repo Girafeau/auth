@@ -10,12 +10,12 @@
 
 
                           <div class="field has-text-centered">
-                              <img src="mouton.png" />
+                              <img src="../assets/mouton.png" alt="Mouton"/>
                           </div>
 
 
                             <div class="field">
-                                <h1 class="title is-medium has-text-centered">Connectez-<span class="has-text-link">vous</span>.</h1>
+                                <h1 class="title is-medium has-text-centered">Continuez vers le <span class="has-text-link">site</span>.</h1>
                             </div>
 <hr/>
 

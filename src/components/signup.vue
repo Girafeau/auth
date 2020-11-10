@@ -10,7 +10,7 @@
 
 
                             <div class="field has-text-centered">
-                                <img src="mouton.png" />
+                                <img src="../assets/mouton.png" alt="Mouton"/>
                             </div>
 
 
