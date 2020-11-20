@@ -72,42 +72,45 @@ module.exports = function (server) {
                         Supprime le code d'autorisation utilisé.
                     */
                     const {authorization_code} = req.body;
-                    codes.revoke(authorization_code);
+                    const object = await codes.revoke(authorization_code);
 
-                    /*
-                        Génére les tokens.
-                     */
-                    let access_token_date = new Date();
-                    access_token_date.setSeconds(access_token_date.getSeconds() + token.access.expiry);
+                    if(object) {
+                        /*
+                            Génére les tokens.
+                         */
+                        let access_token_date = new Date();
+                        access_token_date.setSeconds(access_token_date.getSeconds() + token.access.expiry);
 
-                    let refresh_token_date = new Date();
-                    refresh_token_date.setSeconds(refresh_token_date.getSeconds() + token.refresh.expiry);
+                        let refresh_token_date = new Date();
+                        refresh_token_date.setSeconds(refresh_token_date.getSeconds() + token.refresh.expiry);
 
-                    let access_token = jwt.sign({
-                        client_id: res.locals.client_id,
-                        user_id: res.locals.user_id
-                    }, token.secret, { expiresIn: token.access.expiry });
+                        let access_token = jwt.sign({
+                            client_id: res.locals.client_id,
+                            user_id: res.locals.user_id
+                        }, token.secret, { expiresIn: token.access.expiry });
 
-                    let refresh_token = jwt.sign({
-                        client_id: res.locals.client_id,
-                        user_id: res.locals.user_id
-                    }, token.secret, { expiresIn: token.refresh.expiry });
+                        let refresh_token = jwt.sign({
+                            client_id: res.locals.client_id,
+                            user_id: res.locals.user_id
+                        }, token.secret, { expiresIn: token.refresh.expiry });
 
-                    const object = await tokens.save({
-                        access_token: access_token,
-                        access_token_expires_at: access_token_date,
-                        refresh_token: refresh_token,
-                        refresh_token_expires_at: refresh_token_date,
-                    }, res.locals.client_id, res.locals.user_id);
+                        const object = await tokens.save({
+                            access_token: access_token,
+                            access_token_expires_at: access_token_date,
+                            refresh_token: refresh_token,
+                            refresh_token_expires_at: refresh_token_date,
+                        }, res.locals.client_id, res.locals.user_id);
 
-                    res.status(200).send({
-                        success: true,
-                        access_token: object.access_token,
-                        refresh_token: object.refresh_token,
-                        token_type: 'Bearer',
-                        expires_in: token.access.expiry
-                    });
-
+                        if(object) {
+                            res.status(200).send({
+                                success: true,
+                                access_token: object.access_token,
+                                refresh_token: object.refresh_token,
+                                token_type: 'Bearer',
+                                expires_in: token.access.expiry
+                            });
+                        }
+                    }
                 }
             }
         } else if(grant_type === 'refresh_token') {
@@ -137,15 +140,15 @@ module.exports = function (server) {
                             user_id: decoded.user_id
                         }, token.secret, { expiresIn: token.access.expiry });
 
-                        tokens.update(refresh_token, access_token);
-
-                        res.status(200).send({
-                            success: true,
-                            access_token: access_token,
-                            token_type: 'Bearer',
-                            expires_in: token.access.expiry
-                        });
-
+                        const object = await tokens.update(refresh_token, access_token);
+                        if(object)  {
+                            res.status(200).send({
+                                success: true,
+                                access_token: access_token,
+                                token_type: 'Bearer',
+                                expires_in: token.access.expiry
+                            });
+                        }
                     }
                 });
             }

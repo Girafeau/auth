@@ -1,7 +1,7 @@
 const jwt = require('jsonwebtoken');
-const tokens = require('../../database/tokens');
+const tokens = require('../database/tokens');
 
-const config = require('../config');
+const config = require('./config');
 const token = config.token;
 
 module.exports = function secure(req, res, next) {

@@ -6,7 +6,7 @@ const salt = 10;
 
 module.exports = function (server) {
 
-    server.get('/user/:id', secure, async function (req, res, next) {
+    server.get('/user/:id', secure, async function (req, res) {
         const object = await users.get(res.locals.token.user_id);
         if(!object) {
             res.status(404).send({
@@ -67,11 +67,14 @@ module.exports = function (server) {
                 email: email,
                 password: hash
             };
-            users.save(user);
-            res.status(201).send({
-                success: true,
-                message: 'user created'
-            });
+            const object = await users.save(user);
+            if(object) {
+                res.status(201).send({
+                    success: true,
+                    message: 'user created'
+                });
+            }
+
         });
     });
 }
