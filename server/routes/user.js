@@ -1,13 +1,8 @@
 const users = require('../../database/users');
-const jwt = require('jsonwebtoken');
-const tokens = require('../../database/tokens');
 const secure = require('../secure');
 const schema = require('../schemas/user');
 const bcrypt = require('bcrypt');
 const salt = 10;
-
-const config = require('../config');
-const token = config.token;
 
 module.exports = function (server) {
 
@@ -29,16 +24,16 @@ module.exports = function (server) {
                     success: true,
                     user: object
                 });
-            }      
-        }     
+            }
+        }
     });
-                  
+
 
     server.post('/user', function(req, res, next) {
-         /*
-            Vérifie les paramètres de la requête.
-        */
-       schema.isValid(req.body).then(function (valid) {
+        /*
+           Vérifie les paramètres de la requête.
+       */
+        schema.isValid(req.body).then(function (valid) {
             if (!valid) {
                 res.status(400).send({
                     success: false,
@@ -66,19 +61,17 @@ module.exports = function (server) {
         /*
         * Sauvegarde l'utilisateur.
         */
-        const {password, email} = req.body; 
+        const {password, email} = req.body;
         bcrypt.hash(password, salt, async function(err, hash) {
             const user = {
                 email: email,
                 password: hash
             };
-            const object = await users.save(user);
-            if(object) {
-                res.status(201).send({
-                    success: true,
-                    message: 'user created'
-                });
-            }
+            users.save(user);
+            res.status(201).send({
+                success: true,
+                message: 'user created'
+            });
         });
     });
 }

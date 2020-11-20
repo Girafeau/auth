@@ -111,14 +111,12 @@ module.exports = function (server) {
             scope: 'access',
         }, res.locals.client_id, res.locals.user_id);
 
-        if (object) {
-            res.status(201).send({
-                success: true,
-                redirect_uri: object.redirect_uri,
-                authorization_code: object.authorization_code,
-                state: request.state
-            });
-        }
+        res.status(201).send({
+            success: true,
+            redirect_uri: object.redirect_uri,
+            authorization_code: object.authorization_code,
+            state: request.state
+        });
     });
 
 }

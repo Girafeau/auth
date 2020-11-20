@@ -49,109 +49,105 @@ module.exports = function (server) {
                 success: false,
                 message: 'invalid grant type'
             });
-        } else {
-            if(grant_type === 'authorization_code') {
-                /*
-                    Vérifie le code d'autorisation.
-                 */
-                const { authorization_code } = req.body;
-                const object = await codes.get(authorization_code);
-                if (!object) {
+        } else if(grant_type === 'authorization_code') {
+            /*
+                Vérifie le code d'autorisation.
+             */
+            const { authorization_code } = req.body;
+            const object = await codes.get(authorization_code);
+            if (!object) {
+                res.status(400).send({
+                    success: false,
+                    message: 'invalid authorization code'
+                });
+            } else {
+                res.locals.client_id = object.client_id;
+                if (!before(Date.now(), object.expires_at)) {
                     res.status(400).send({
                         success: false,
-                        message: 'invalid authorization code'
+                        message: 'expired authorization code'
                     });
                 } else {
-                    res.locals.client_id = object.client_id;
-                    if (!before(Date.now(), object.expires_at)) {
-                        res.status(400).send({
+                    /*
+                        Supprime le code d'autorisation utilisé.
+                    */
+                    const {authorization_code} = req.body;
+                    codes.revoke(authorization_code);
+
+                    /*
+                        Génére les tokens.
+                     */
+                    let access_token_date = new Date();
+                    access_token_date.setSeconds(access_token_date.getSeconds() + token.access.expiry);
+
+                    let refresh_token_date = new Date();
+                    refresh_token_date.setSeconds(refresh_token_date.getSeconds() + token.refresh.expiry);
+
+                    let access_token = jwt.sign({
+                        client_id: res.locals.client_id,
+                        user_id: res.locals.user_id
+                    }, token.secret, { expiresIn: token.access.expiry });
+
+                    let refresh_token = jwt.sign({
+                        client_id: res.locals.client_id,
+                        user_id: res.locals.user_id
+                    }, token.secret, { expiresIn: token.refresh.expiry });
+
+                    const object = await tokens.save({
+                        access_token: access_token,
+                        access_token_expires_at: access_token_date,
+                        refresh_token: refresh_token,
+                        refresh_token_expires_at: refresh_token_date,
+                    }, res.locals.client_id, res.locals.user_id);
+
+                    res.status(200).send({
+                        success: true,
+                        access_token: object.access_token,
+                        refresh_token: object.refresh_token,
+                        token_type: 'Bearer',
+                        expires_in: token.access.expiry
+                    });
+
+                }
+            }
+        } else if(grant_type === 'refresh_token') {
+            /*
+               Vérifie le token.
+            */
+            const {refresh_token} = req.body;
+            const object = await tokens.getRefreshToken(refresh_token);
+            if (!object) {
+                res.status(401).send({
+                    success: false,
+                    message: 'invalid refresh token'
+                });
+            } else {
+                jwt.verify(refresh_token, token.secret, async function(err, decoded) {
+                    if(err) {
+                        res.status(401).send({
                             success: false,
-                            message: 'expired authorization code'
+                            message: 'invalid refresh token'
                         });
                     } else {
                         /*
-                            Supprime le code d'autorisation utilisé.
-                        */
-                        const {authorization_code} = req.body;
-                        const object = await codes.revoke(authorization_code);
-                        if (object) {
-                            /*
-                                Génére les tokens.
-                             */
-                            let access_token_date = new Date();
-                            access_token_date.setSeconds(access_token_date.getSeconds() + token.access.expiry);
+                            Met à jour le token d'accès.
+                         */
+                        let access_token = jwt.sign({
+                            client_id: decoded.client_id,
+                            user_id: decoded.user_id
+                        }, token.secret, { expiresIn: token.access.expiry });
 
-                            let refresh_token_date = new Date();
-                            refresh_token_date.setSeconds(refresh_token_date.getSeconds() + token.refresh.expiry);
+                        tokens.update(refresh_token, access_token);
 
-                            let access_token = jwt.sign({
-                                client_id: res.locals.client_id,
-                                user_id: res.locals.user_id
-                            }, token.secret, { expiresIn: token.access.expiry });
+                        res.status(200).send({
+                            success: true,
+                            access_token: access_token,
+                            token_type: 'Bearer',
+                            expires_in: token.access.expiry
+                        });
 
-                            let refresh_token = jwt.sign({
-                                client_id: res.locals.client_id,
-                                user_id: res.locals.user_id
-                            }, token.secret, { expiresIn: token.refresh.expiry });
-
-                            const object = await tokens.save({
-                                access_token: access_token,
-                                access_token_expires_at: access_token_date,
-                                refresh_token: refresh_token,
-                                refresh_token_expires_at: refresh_token_date,
-                            }, res.locals.client_id, res.locals.user_id);
-
-                            if (object) {
-                                res.status(200).send({
-                                    success: true,
-                                    access_token: object.access_token,
-                                    refresh_token: object.refresh_token,
-                                    token_type: 'Bearer',
-                                    expires_in: token.access.expiry
-                                });
-                            }
-                        }
                     }
-                }
-            } else {
-                /*
-                   Vérifie le token.
-                */
-                const {refresh_token} = req.body;
-                const object = await tokens.getRefreshToken(refresh_token);
-                if (!object) {
-                    res.status(401).send({
-                        success: false,
-                        message: 'invalid refresh token'
-                    });
-                } else {
-                    jwt.verify(refresh_token, token.secret, async function(err, decoded) {
-                        if(err) {
-                            res.status(401).send({
-                                success: false,
-                                message: 'invalid refresh token'
-                            });
-                        } else {
-                            /*
-                                Met à jour le token d'accès.
-                             */
-                            let access_token = jwt.sign({
-                                client_id: decoded.client_id,
-                                user_id: decoded.user_id
-                            }, token.secret, { expiresIn: token.access.expiry });
-
-                            const object = await tokens.update(refresh_token, access_token);
-                            if(object) {
-                                res.status(200).send({
-                                    success: true,
-                                    access_token: access_token,
-                                    token_type: 'Bearer',
-                                    expires_in: token.access.expiry
-                                });
-                            }
-                        }
-                    });
-                }
+                });
             }
         }
     });
