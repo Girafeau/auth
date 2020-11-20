@@ -4,5 +4,5 @@ COPY package*.json ./
 RUN npm install
 COPY . .
 RUN npm run build
-EXPOSE process.env.PORT || 8080
+EXPOSE 8080
 RUN npm start
