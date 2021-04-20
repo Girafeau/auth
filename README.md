@@ -1,12 +1,12 @@
-# Service d'authentification OAuth2 🔥
+# OAuth2 authentication service 🦉
 
 
-*• Obtenir le formulaire de connexion :*
+*• Get login form :*
 ```
 GET /signin?client_id=<ID>&redirect_uri=<URI>&grant_type=authorization_code&response_type=code&state=<HASH_STATE>
 ```
 
-*• Récupérer les tokens avec le code d'autorisation :*
+*• Get tokens with authorization code :*
 ```
 POST /token
 
@@ -18,12 +18,12 @@ POST /token
 }
 ```
 
-*• Accèder aux informations de l'utilisateur :*
+*• Get user infos :*
 ```
 GET /user/<ID>
 ```
 
-*• Rafraîchir son token d'accès :*
+*• Refresh token :*
 ```
 POST /token
 
